@@ -1,0 +1,97 @@
+---
+layout: default
+title: 100% Pen Scratch Image Importer
+---
+
+<h1>Scratch Image Scanner</h1>
+
+<input type="file" id="imgInput" accept="image/*">
+<br><br>
+
+<canvas id="canvas"></canvas>
+<br><br>
+
+<button id="downloadX">Download X</button>
+<button id="downloadY">Download Y</button>
+<button id="downloadColor">Download Color</button>
+
+<script>
+const imgInput = document.getElementById("imgInput");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let xs = [];
+let ys = [];
+let colors = [];
+
+// Convert RGB → Scratch packed color integer
+function rgbToScratchColorInt(r, g, b) {
+    return r * 65536 + g * 256 + b;
+}
+
+imgInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    img.onload = () => {
+
+        const STAGE_W = 480;
+        const STAGE_H = 360;
+
+        const scale = Math.min(STAGE_W / img.width, STAGE_H / img.height);
+
+        const newW = Math.floor(img.width * scale);
+        const newH = Math.floor(img.height * scale);
+
+        canvas.width = newW;
+        canvas.height = newH;
+
+        ctx.drawImage(img, 0, 0, newW, newH);
+
+        const data = ctx.getImageData(0, 0, newW, newH).data;
+
+        xs = [];
+        ys = [];
+        colors = [];
+
+        let index = 0;
+        for (let y = 0; y < newH; y++) {
+            for (let x = 0; x < newW; x++) {
+
+                const r = data[index];
+                const g = data[index + 1];
+                const b = data[index + 2];
+
+                const scratchX = x - newW / 2;
+                const scratchY = newH / 2 - y;
+
+                xs.push(Math.round(scratchX));
+                ys.push(Math.round(scratchY));
+
+                // REAL Scratch color value
+                colors.push(rgbToScratchColorInt(r, g, b));
+
+                index += 4;
+            }
+        }
+
+        alert("Image scanned using Scratch's REAL RGB color format.");
+    };
+});
+
+function download(name, content) {
+    const clean = content.map(v => Number(v));
+    const blob = new Blob([clean.join("\n")], { type: "text/plain" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name + ".txt";
+    a.click();
+}
+
+document.getElementById("downloadX").onclick = () => download("scratch_x", xs);
+document.getElementById("downloadY").onclick = () => download("scratch_y", ys);
+document.getElementById("downloadColor").onclick = () => download("scratch_color_rgbint", colors);
+</script>
