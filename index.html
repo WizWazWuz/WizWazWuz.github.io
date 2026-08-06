@@ -22,26 +22,30 @@
       overflow: hidden;
     }
 
-    /* Outer Hero Container for 3D Perspective */
+    /* Outer Hero Container */
     .hero {
       position: relative;
       perspective: 1000px;
       text-align: center;
       user-select: none;
       padding: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* Outer Wrapper handles floating animation ONLY */
+    /* Floating animation for the title */
     .float-wrapper {
       animation: gentleFloat 4s ease-in-out infinite alternate;
       transform-style: preserve-3d;
     }
 
-    /* Inner Wrapper handles JavaScript mouse tilt ONLY */
+    /* Interactive 3D tilt applied ONLY to the text title */
     .tilt-card {
       transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       transform-style: preserve-3d;
       will-change: transform;
+      cursor: pointer;
     }
 
     .title {
@@ -53,27 +57,39 @@
       text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
+    /* Navigation Links Outside Tilt Container for Reliable Clicks */
     .nav-links {
       margin-top: 15px;
-      font-size: 0.75rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      color: #20dfb3;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 10px;
+      position: relative;
+      z-index: 20;
     }
 
     .nav-btn {
+      background: transparent;
+      border: none;
+      color: #20dfb3;
+      font-family: inherit;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 2px;
       cursor: pointer;
+      padding: 6px 12px;
       transition: opacity 0.2s, transform 0.2s;
-      display: inline-block;
     }
 
     .nav-btn:hover {
-      opacity: 0.7;
+      opacity: 0.6;
       transform: scale(1.05);
+    }
+
+    .divider {
+      color: #20dfb3;
+      font-size: 0.75rem;
+      font-weight: 800;
     }
 
     /* Center Tall Vertical Overlay Panel */
@@ -155,12 +171,14 @@
     <div class="float-wrapper">
       <div class="tilt-card" id="tiltCard">
         <h1 class="title">wizwazwuz</h1>
-        <div class="nav-links">
-          <span class="nav-btn" onclick="openModal('projectsModal')">PROJECTS</span>
-          <span>•</span>
-          <span class="nav-btn" onclick="openModal('aboutModal')">ABOUT</span>
-        </div>
       </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="nav-links">
+      <button class="nav-btn" onclick="openModal('projectsModal')">PROJECTS</button>
+      <span class="divider">•</span>
+      <button class="nav-btn" onclick="openModal('aboutModal')">ABOUT</button>
     </div>
   </div>
 
@@ -200,9 +218,9 @@
 
   <script>
     const card = document.getElementById('tiltCard');
-    const MAX_TILT = 22; // Maximum tilt angle in degrees
+    const MAX_TILT = 22;
 
-    // Tracks mouse across the entire browser window
+    // Smooth mouse tilt tracking across full window
     window.addEventListener('mousemove', (e) => {
       const x = (e.clientX / window.innerWidth) - 0.5;
       const y = (e.clientY / window.innerHeight) - 0.5;
@@ -213,7 +231,7 @@
       card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    // Modal Control Functions
+    // Modal Display Functions
     function openModal(id) {
       document.getElementById(id).classList.add('active');
     }
