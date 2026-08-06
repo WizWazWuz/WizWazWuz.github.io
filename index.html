@@ -57,7 +57,7 @@
       text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
-    /* Navigation Links Outside Tilt Container for Reliable Clicks */
+    /* Navigation Links Outside Tilt Container */
     .nav-links {
       margin-top: 15px;
       display: flex;
@@ -92,7 +92,7 @@
       font-weight: 800;
     }
 
-    /* Center Tall Vertical Overlay Panel */
+    /* Center Overlay Panel */
     .overlay-backdrop {
       position: fixed;
       top: 0;
@@ -131,7 +131,7 @@
       transform: scale(1);
     }
 
-    /* Editable Content Text Styling */
+    /* Editable Content Text & Links */
     .modal-content {
       color: #20dfb3;
       font-size: 1rem;
@@ -150,7 +150,18 @@
     .project-item h3 {
       font-size: 1.1rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .project-item a {
+      color: #20dfb3;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .project-item a:hover {
+      text-decoration: underline;
+      opacity: 0.8;
     }
 
     .project-item p {
@@ -202,15 +213,14 @@
   <div class="overlay-backdrop" id="projectsModal" onclick="closeOnBackdrop(event, 'projectsModal')">
     <div class="modal-panel">
       <div class="modal-content">
-        <!-- EDIT YOUR PROJECTS HERE -->
+        <!-- SINGLE EDITABLE PROJECT ITEM -->
         <div class="project-item">
-          <h3>project 1</h3>
+          <h3>
+            <a href="https://github.com/wizwazwuz" target="_blank" rel="noopener noreferrer">
+              project 1 &nearr;
+            </a>
+          </h3>
           <p>Description for your project goes here.</p>
-        </div>
-
-        <div class="project-item">
-          <h3>project 2</h3>
-          <p>Description for your second project goes here.</p>
         </div>
       </div>
     </div>
