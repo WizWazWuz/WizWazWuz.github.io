@@ -22,7 +22,7 @@
       overflow: hidden;
     }
 
-    /* Main Container & Perspective */
+    /* Outer Hero Container for 3D Perspective */
     .hero {
       position: relative;
       perspective: 1000px;
@@ -31,11 +31,17 @@
       padding: 50px;
     }
 
-    .tilt-wrapper {
+    /* Outer Wrapper handles floating animation ONLY */
+    .float-wrapper {
+      animation: gentleFloat 4s ease-in-out infinite alternate;
+      transform-style: preserve-3d;
+    }
+
+    /* Inner Wrapper handles JavaScript mouse tilt ONLY */
+    .tilt-card {
       transition: transform 0.1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       transform-style: preserve-3d;
-      animation: gentleFloat 4s ease-in-out infinite alternate;
-      cursor: pointer;
+      will-change: transform;
     }
 
     .title {
@@ -44,10 +50,11 @@
       letter-spacing: -2px;
       line-height: 1;
       color: #20dfb3;
+      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
     .nav-links {
-      margin-top: 10px;
+      margin-top: 15px;
       font-size: 0.75rem;
       font-weight: 800;
       letter-spacing: 2px;
@@ -55,32 +62,35 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .nav-btn {
       cursor: pointer;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.2s;
+      display: inline-block;
     }
 
     .nav-btn:hover {
-      opacity: 0.6;
+      opacity: 0.7;
+      transform: scale(1.05);
     }
 
-    /* Overlay Frame Matching Screenshots */
+    /* Center Tall Vertical Overlay Panel */
     .overlay-backdrop {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(3, 10, 22, 0.6);
+      background: rgba(3, 10, 22, 0.65);
+      backdrop-filter: blur(4px);
       display: flex;
       justify-content: center;
       align-items: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
       z-index: 100;
     }
 
@@ -89,7 +99,6 @@
       pointer-events: auto;
     }
 
-    /* Center Tall Vertical Panel */
     .modal-panel {
       background: #091b36;
       width: 380px;
@@ -97,9 +106,9 @@
       height: 90vh;
       padding: 40px 30px;
       overflow-y: auto;
-      box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
       transform: scale(0.95);
-      transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .overlay-backdrop.active .modal-panel {
@@ -115,7 +124,7 @@
     }
 
     .modal-content p {
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .project-item {
@@ -135,20 +144,22 @@
 
     @keyframes gentleFloat {
       0% { transform: translateY(0px); }
-      100% { transform: translateY(-8px); }
+      100% { transform: translateY(-10px); }
     }
   </style>
 </head>
 <body>
 
-  <!-- Landing Screen -->
-  <div class="hero" id="hero">
-    <div class="tilt-wrapper" id="tiltCard">
-      <h1 class="title">wizwazwuz</h1>
-      <div class="nav-links">
-        <span class="nav-btn" onclick="openModal('projectsModal')">PROJECTS</span>
-        <span>•</span>
-        <span class="nav-btn" onclick="openModal('aboutModal')">ABOUT</span>
+  <!-- Landing Display -->
+  <div class="hero">
+    <div class="float-wrapper">
+      <div class="tilt-card" id="tiltCard">
+        <h1 class="title">wizwazwuz</h1>
+        <div class="nav-links">
+          <span class="nav-btn" onclick="openModal('projectsModal')">PROJECTS</span>
+          <span>•</span>
+          <span class="nav-btn" onclick="openModal('aboutModal')">ABOUT</span>
+        </div>
       </div>
     </div>
   </div>
@@ -188,20 +199,18 @@
   </div>
 
   <script>
-    // 3D Tilt Effect
     const card = document.getElementById('tiltCard');
-    const hero = document.getElementById('hero');
+    const MAX_TILT = 22; // Maximum tilt angle in degrees
 
-    hero.addEventListener('mousemove', (e) => {
-      const rect = hero.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5;
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+    // Tracks mouse across the entire browser window
+    window.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth) - 0.5;
+      const y = (e.clientY / window.innerHeight) - 0.5;
 
-      card.style.transform = `rotateX(${-y * 20}deg) rotateY(${x * 20}deg)`;
-    });
+      const rotateX = -y * MAX_TILT;
+      const rotateY = x * MAX_TILT;
 
-    hero.addEventListener('mouseleave', () => {
-      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
     // Modal Control Functions
