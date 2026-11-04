@@ -70,6 +70,7 @@
     .nav-links {
       display: flex;
       gap: 0.5rem;
+      align-items: center;
     }
 
     .nav-btn {
@@ -92,6 +93,18 @@
     .nav-btn.active {
       background: var(--electric-blue);
       color: #ffffff;
+    }
+
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: rgba(59, 146, 236, 0.15);
+      color: var(--deep-navy);
+      padding: 0.35rem 0.8rem;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
     }
 
     .heading-bar {
@@ -186,202 +199,3 @@
       align-items: center;
       gap: 0.2rem;
     }
-
-    .delete-btn {
-      background: none;
-      border: none;
-      color: #e53935;
-      cursor: pointer;
-      opacity: 0.7;
-    }
-
-    .delete-btn:hover {
-      opacity: 1;
-    }
-
-    /* Simple Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(17, 66, 133, 0.35);
-      backdrop-filter: blur(3px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 99;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    .modal-box {
-      background: #ffffff;
-      width: 90%;
-      max-width: 440px;
-      border-radius: 16px;
-      padding: 1.5rem;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    }
-
-    .modal-box h2 {
-      color: var(--deep-navy);
-      font-size: 1.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .field {
-      margin-bottom: 0.9rem;
-    }
-
-    .field label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 500;
-      color: var(--deep-navy);
-      margin-bottom: 0.25rem;
-    }
-
-    .field input, .field textarea {
-      width: 100%;
-      padding: 0.6rem;
-      border: 1px solid var(--outline);
-      border-radius: 8px;
-      font-size: 0.88rem;
-    }
-
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 0.5rem;
-      margin-top: 1.25rem;
-    }
-
-    .cancel-btn {
-      background: #eef4f8;
-      color: var(--deep-navy);
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 10px;
-      cursor: pointer;
-    }
-  </style>
-</head>
-<body>
-
-  <div class="app-container">
-    <header>
-      <a href="index.html" class="brand">
-        <img src="logo.png" alt="wizwazwuz logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><circle cx=\'50\' cy=\'50\' r=\'40\' fill=\'%233B92EC\'/></svg>'">
-        <span>wizwazwuz</span>
-      </a>
-      <nav class="nav-links">
-        <a href="index.html" class="nav-btn">
-          <span class="material-icons-round">home</span> Home
-        </a>
-        <a href="projects.html" class="nav-btn active">
-          <span class="material-icons-round">folder</span> Projects
-        </a>
-      </nav>
-    </header>
-
-    <div class="heading-bar">
-      <h1>Projects</h1>
-      <button class="add-btn" onclick="toggleModal(true)">
-        <span class="material-icons-round">add</span> Add Project
-      </button>
-    </div>
-
-    <div class="projects-grid" id="grid">
-      <div class="project-card">
-        <div>
-          <div class="card-tags">
-            <span class="tag">HTML</span>
-            <span class="tag">CSS</span>
-          </div>
-          <h3>My First Project</h3>
-          <p>A starter project card hosted on github.io.</p>
-        </div>
-        <div class="card-footer">
-          <a href="#" class="card-link" target="_blank">
-            Open <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
-          </a>
-          <button class="delete-btn" onclick="this.closest('.project-card').remove()">
-            <span class="material-icons-round">delete</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal-backdrop" id="modal">
-    <div class="modal-box">
-      <h2>Add New Project</h2>
-      <div class="field">
-        <label>Title</label>
-        <input type="text" id="pTitle" placeholder="Project Title">
-      </div>
-      <div class="field">
-        <label>Tags (comma-separated)</label>
-        <input type="text" id="pTags" placeholder="Roblox, Python, Web">
-      </div>
-      <div class="field">
-        <label>Description</label>
-        <textarea id="pDesc" rows="3" placeholder="What does this project do?"></textarea>
-      </div>
-      <div class="field">
-        <label>Link URL</label>
-        <input type="text" id="pLink" value="#">
-      </div>
-      <div class="modal-actions">
-        <button class="cancel-btn" onclick="toggleModal(false)">Cancel</button>
-        <button class="add-btn" onclick="addProject()">Add</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function toggleModal(show) {
-      document.getElementById('modal').classList.toggle('open', show);
-    }
-
-    function addProject() {
-      const title = document.getElementById('pTitle').value || 'Untitled Project';
-      const tags = document.getElementById('pTags').value.split(',').map(t => t.trim()).filter(Boolean);
-      const desc = document.getElementById('pDesc').value || 'No description provided.';
-      const link = document.getElementById('pLink').value || '#';
-
-      const tagMarkup = tags.length 
-        ? tags.map(t => `<span class="tag">${t}</span>`).join('') 
-        : '<span class="tag">Project</span>';
-
-      const card = document.createElement('div');
-      card.className = 'project-card';
-      card.innerHTML = `
-        <div>
-          <div class="card-tags">${tagMarkup}</div>
-          <h3>${title}</h3>
-          <p>${desc}</p>
-        </div>
-        <div class="card-footer">
-          <a href="${link}" class="card-link" target="_blank">
-            Open <span class="material-icons-round" style="font-size:16px;">open_in_new</span>
-          </a>
-          <button class="delete-btn" onclick="this.closest('.project-card').remove()">
-            <span class="material-icons-round">delete</span>
-          </button>
-        </div>
-      `;
-
-      document.getElementById('grid').prepend(card);
-      
-      document.getElementById('pTitle').value = '';
-      document.getElementById('pTags').value = '';
-      document.getElementById('pDesc').value = '';
-      document.getElementById('pLink').value = '#';
-      toggleModal(false);
-    }
-  </script>
-
-</body>
-</html>
